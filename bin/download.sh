@@ -42,11 +42,33 @@ CURR_TIME=`date +%Y%m%d-%H:%M:%S`
 SLEEP=0
 SCRIPT_LOGFILE="${LOG}/download-${CURR_DATE}.log"
 
+check_symbol() {
+  if [ ! -f "${CFG}/symbol.cfg" ]; then
+    echo "Error: No symbol.cfg has been created. Stopping script."
+    exit 10
+  fi
+} #check_symbol
+
+check_directories() {
+
+  DIR_NAME=$1
+
+  if [ ! -d "${DIR_NAME}" ]; then
+    mkdir -p ${DIR_NAME}
+    echo "Create directory: ${DIR_NAME}"
+  fi
+}
+
+
 get_daily_price () {
+
+  check_symbol
+  check_directories ${DAT_DAILY}
 
   for SYMBOL in $(cat ${CFG}/symbol.cfg)
   do
     echo "${CURR_TIME}: downloading day data for ${SYMBOL}." >> ${SCRIPT_LOGFILE} 2>&1
+
     LOG_FILE="${LOG}/${SYMBOL}.log"
     OUTPUT_FILE="${DAT_DAILY}/${SYMBOL}.${DATATYPE}"
     URL="${BASEURL}=${DAILY_FUNCTION}&symbol=${SYMBOL}&outputsize=${OUTPUTSIZE}&apikey=${APIKEY}&datatype=${DATATYPE}"
@@ -56,6 +78,8 @@ get_daily_price () {
 }
 
 get_weekly_price () {
+
+  check_directories ${DAT_WEEKLY}
 
   for SYMBOL in $(cat ${CFG}/symbol.cfg)
   do
@@ -74,6 +98,7 @@ get_sma_daily () {
   # set parameter
   SMATIMEPERIOD=$1
 
+  check_directories ${DAT}/SMA${SMATIMEPERIOD}
   #check if DAT directory exists. Create it if it does not.
   if [ ! -d ${DAT}/SMA${SMATIMEPERIOD} ]; then
     mkdir -p ${DAT}/SMA${SMATIMEPERIOD}
@@ -99,9 +124,14 @@ get_sma_daily () {
 # MAIN
 #
 
+check_directories ${CFG}
+check_directories ${BIN}
+check_directories ${DAT}
+check_directories ${LOG}
+
 get_daily_price
-# get_weekly_price
-get_sma_daily 6
+get_weekly_price
+# get_sma_daily 6
 # get_sma_daily 12
 
 # TAR Files
