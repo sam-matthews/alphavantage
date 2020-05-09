@@ -123,16 +123,17 @@ get_sma_daily () {
 #
 # MAIN
 #
-
+echo "Checking directories have been created."
 check_directories ${CFG}
 check_directories ${BIN}
 check_directories ${DAT}
 check_directories ${LOG}
 
+echo "Downloading data."
 get_daily_price
 get_weekly_price
-# get_sma_daily 6
-# get_sma_daily 12
+get_sma_daily 6
+get_sma_daily 12
 
 # TAR Files
 
