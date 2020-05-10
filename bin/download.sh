@@ -12,6 +12,9 @@
 # Moved DAT to seperate directories for DAILY and WEEKLY
 # New function for weekly data
 
+# History
+# 20200510 SMM 1.0.4 Remove SMA function from alphavantage application.
+
 # Setup
 
 # API: curl https://www.alphavantage.co/query\?function\=TIME_SERIES_DAILY\&symbol\=AAPL\&apikey\=WHWGAETT94IZAL0B\&datatype\=csv --output AAPL.csv
@@ -93,33 +96,6 @@ get_weekly_price () {
   done
 }
 
-get_sma_daily () {
-
-  # set parameter
-  SMATIMEPERIOD=$1
-
-  check_directories ${DAT}/SMA${SMATIMEPERIOD}
-  #check if DAT directory exists. Create it if it does not.
-  if [ ! -d ${DAT}/SMA${SMATIMEPERIOD} ]; then
-    mkdir -p ${DAT}/SMA${SMATIMEPERIOD}
-  fi
-
-  # LOOP, to download data
-  for SYMBOL in $(cat ${CFG}/symbol.cfg)
-  do
-    echo "${CURR_TIME}: downloading SMA ${SMATIMEPERIOD} day data for ${SYMBOL}." \
-      >> ${SCRIPT_LOGFILE} 2>&1
-
-    LOG_FILE="${LOG}/${SYMBOL}-SMA-${SMATIMEPERIOD}.log"
-    OUTPUT_FILE="${DAT}/SMA${SMATIMEPERIOD}/${SYMBOL}.${DATATYPE}"
-
-    URL="${BASEURL}=${SMAFUNCTION}&symbol=${SYMBOL}&interval=${SMAINTERVAL}&time_period=${SMATIMEPERIOD}&series_type=${SERIESTYPE}&apikey=${APIKEY}&datatype=${DATATYPE}"
-
-    curl ${URL} --output ${OUTPUT_FILE} > ${LOG_FILE} 2>&1
-    sleep ${SLEEP}
-  done
-}
-
 #
 # MAIN
 #
@@ -132,8 +108,7 @@ check_directories ${LOG}
 echo "Downloading data."
 get_daily_price
 get_weekly_price
-get_sma_daily 6
-get_sma_daily 12
+
 
 # TAR Files
 
