@@ -107,7 +107,6 @@ check_directories ${LOG}
 
 echo "Downloading data."
 get_daily_price
-get_weekly_price
 
 
 # TAR Files
