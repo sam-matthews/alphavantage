@@ -48,6 +48,7 @@ SCRIPT_LOGFILE="${LOG}/download-${CURR_DATE}.log"
 check_symbol() {
   if [ ! -f "${CFG}/symbol.cfg" ]; then
     echo "Error: No symbol.cfg has been created. Stopping script."
+    echo "Missing: ${CFG}/symbol.cfg"
     exit 10
   fi
 } #check_symbol

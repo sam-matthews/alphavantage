@@ -16,6 +16,7 @@ def multiprocessing_func(symbol):
     "symbol": symbol,
     "interval" : "daily",
     "datatype": "csv",
+    "outputsize": "full",
     "apikey": "CQ1QMHUNGM68QOWG" }
 
   response = requests.get(API_URL, data)
