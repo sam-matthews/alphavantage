@@ -1,4 +1,5 @@
 import requests
+
 # import alpha_vantage
 import time
 import multiprocessing
@@ -27,7 +28,6 @@ def multiprocessing_func(symbol):
         f.write(data)
 
     print('Completed ' + symbol + '.')
-
 
 if __name__ == '__main__':
 
