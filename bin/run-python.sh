@@ -1,12 +1,8 @@
 #!/bin/bash
 
-cd "$(dirname "$0")";
-CWD="$(pwd)"
-echo $CWD
+ulimit -n 10000
+source ${HOME}/dev/python/my-python/bin/activate
+python /Users/sam/dev/gh/alphavantage/bin/pull-csv-parallel.py
 
-export PYTHON_PATH=/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages
-echo ${PYTHON_PATH}
-
-python3 /Users/sam/dev/projects/alphavantage/bin/pull-csv-parallel.py
 
 
