@@ -32,6 +32,7 @@ DAT_MONTHLY=${DAT}/monthly
 BASEURL="https://www.alphavantage.co/query?function"
 DAILY_FUNCTION="TIME_SERIES_DAILY"
 WEEKLY_FUNCTION="TIME_SERIES_WEEKLY"
+MONTHLY_FUNCTION="TIME_SERIES_MONTHLY"
 SMAFUNCTION="SMA"
 SMAINTERVAL="daily"
 SERIESTYPE="close"
@@ -98,9 +99,35 @@ get_weekly_price () {
   done
 }
 
+get_monthly_price () {
+
+  check_directories ${DAT_MONTHLY}
+
+  for SYMBOL in $(cat ${CFG}/symbol.cfg)
+  do
+    echo "${CURR_TIME}: downloading week data for ${SYMBOL}." >> ${SCRIPT_LOGFILE} 2>&1
+
+    LOG_FILE="${LOG}/${SYMBOL}-MONTHLY.log"
+    OUTPUT_FILE="${DAT_MONTHLY}/${SYMBOL}.${DATATYPE}"
+    URL="${BASEURL}=${MONTHLY_FUNCTION}&symbol=${SYMBOL}&outputsize=${OUTPUTSIZE}&apikey=${APIKEY}&datatype=${DATATYPE}"
+    curl ${URL} --output ${OUTPUT_FILE} > ${LOG_FILE} 2>&1
+    sleep ${SLEEP}
+  done
+}
+
 #
 # MAIN
 #
+
+# Check if input parameters are correct.
+if [[ $# -ne 1 ]]
+then
+  echo "Error: Number of input parameters is not one :("
+  exit 10
+fi
+
+FUNC_TO_RUN=$1
+
 echo "Checking directories have been created."
 check_directories ${CFG}
 check_directories ${BIN}
@@ -108,8 +135,7 @@ check_directories ${DAT}
 check_directories ${LOG}
 
 echo "Downloading data."
-get_daily_price
-
+${FUNC_TO_RUN}
 
 # TAR Files
 
